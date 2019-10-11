@@ -1,96 +1,82 @@
 <template>
-    <div class="container">
-      <transition-group>
-        <img
-          v-for="(card, index) in cards"
-          :key="card.scope"
-          :src="card.show ? card.src : 'img/close.jpg'" 
-          :class="{move: card.show}"
-          :alt="card.name"
-          @click="show(index)"
-        >
-      </transition-group>
+    <div class="container ">
+      <div class="scope-wrapper">
+        <h1>Очки: {{currentScope}}</h1>
+      </div>
+      <div class="cards-pack" @click="getRandCard">
+        <ul>
+          <li 
+            v-for="(card, index) in 10"
+            :key="index"
+            class="card"
+            :ref="index"
+          ></li>
+        </ul>
+      </div>
     </div>
 </template>
 
 <script>
 export default {
-  data: () => ({
-    cards: [
-      {
-        name: '6 spades',
-        src: 'img/6-spades.jpg',
-        scope: 6,
-        show: false
-      },
-      {
-        name: '7 spades',
-        src: 'img/7-spades.jpg',
-        scope: 7,
-        show: false
-      },
-      {
-        name: '8 spades',
-        src: 'img/8-spades.jpg',
-        scope: 8,
-        show: false
-      },
-      {
-        name: '9 spades',
-        src: 'img/9-spades.jpg',
-        scope: 9,
-        show: false
-      },
-      {
-        name: '10 spades',
-        src: 'img/10-spades.jpg',
-        scope: 10,
-        show: false
-      },
-      {
-        name: 'jack spades',
-        src: 'img/jack-spades.jpg',
-        scope: 2,
-        show: false
-      },
-      {
-        name: 'queen spades',
-        src: 'img/queen-spades.jpg',
-        scope: 3,
-        show: false
-      },
-      {
-        name: 'king spades',
-        src: 'img/king-spades.jpg',
-        scope: 4,
-        show: false
-      },
-      {
-        name: 'ace spades',
-        src: 'img/ace-spades.jpg',
-        scope: 11,
-        show: false
-      },
-    ]
-  }),
   methods: {
-    show(index) {
-      this.cards[index].show = !this.cards[index].show
+    getRandCard() {
+      this.$store.commit('getRandCard')
     }
   }
 }
+
 </script>
 
 <style scoped>
-  img {
-    margin: 10px;
-    max-width: 100px;
-    max-height: 125px;
-    border-radius: 5px;
+  .container {
+    display: flex;
+    justify-content: center;
+    padding: 50px;
+    min-height: 90vh;
+  }
+
+  .cards-pack {
+    background-image: url(../assets/pack.png);
+    background-position: center;
+    display: inline-block;
+    width: 150px;
+    height: 195px;
     cursor: pointer;
-    transition: transform 1s
   }
-  .move {
-    transform: translateX(100px) translateY(100px)
+
+  .sprite-wrapper {
+    position: relative;
+    background-image: url(../assets/Cards.png);
+    width: 121px;
+    height: 169px;
   }
+
+  ul {
+    position: relative;
+    margin-top: 21px;
+    margin-left: 30px;
+    list-style: none;
+    max-height: 169px;
+  }
+
+  .card {
+    position: absolute;
+    display: block;
+    opacity: 0;
+    background-image: url(../assets/Cards.png);
+    width: 121px;
+    height: 169px;
+    transition: transform .5s
+  }
+
+  .card-active {
+    opacity: 1
+  }
+
+  .scope-wrapper {
+    position: absolute;
+    left: 150px;
+    top: 150px;
+  }
+
 </style>
