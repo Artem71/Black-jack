@@ -1,7 +1,7 @@
 <template>
   <div class="card-table">
     <Cards />
-    <Popup v-if="show" />
+    <Popup v-if="showPopup" />
   </div>
 </template>
 
@@ -13,7 +13,7 @@ export default {
   data: () => ({
   }),
   computed: {
-    show() {
+    showPopup() {
       return this.$store.getters.showPopup
     }
   },

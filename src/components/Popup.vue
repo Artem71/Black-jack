@@ -11,7 +11,7 @@
 export default {
   methods: {
     restart() {
-      this.$store.commit('restart')
+      this.$store.dispatch('restart')
     }
   }
 }

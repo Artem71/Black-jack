@@ -1,11 +1,6 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
 
-Vue.use(Vuex)
-
-export default new Vuex.Store({
+export default {
   state: {
-    showPopup: false,
     cards: [
       {
         positionX: 0,
@@ -189,102 +184,86 @@ export default new Vuex.Store({
       }
     ],
     activeCards: [],
-    classes: [
-      {
-        class: 'card-1',
-        show: false
-      },
-      {
-        class: 'card-2',
-        show: false
-      },
-      {
-        class: 'card-3',
-        show: false
-      },
-      {
-        class: 'card-4',
-        show: false
-      },
-      {
-        class: 'card-5',
-        show: false
-      },
-      {
-        class: 'card-6',
-        show: false
-      },
-      {
-        class: 'card-7',
-        show: false
-      },
-      {
-        class: 'card-8',
-        show: false
-      },
-      {
-        class: 'card-9',
-        show: false
-      },
-      {
-        class: 'card-10',
-        show: false
-      },
-    ],
     cardIndex: 0,
+    showCard: [
+      {show: false},
+      {show: false},
+      {show: false},
+      {show: false},
+      {show: false},
+      {show: false},
+      {show: false},
+      {show: false},
+      {show: false},
+      {show: false}
+    ],
+    currentScope: 0,
     translateX: -300,
-    currentScope: 0
+    rand: Math.floor(Math.random() * 35),
+    refCards: null,
+    showPopup: false
   },
   mutations: {
-    restart(state) {
-      state.showPopup = false
-      state.cardIndex = 0
-      state.translateX = -300
-      state.activeCards = []
-      let card = this.$refs
-    
-      for (let index in card) {
-        card[index][0].classList.remove('card-active')
-        card[index][0].style.backgroundPositionX = 0
-        card[index][0].style.backgroundPositionY = 0
-        card[index][0].style.transform = 'none'
-      }
-      state.currentScope = 0
-    },
-    getRandCard(state) {
-      const rand = Math.floor(Math.random() * (state.cards.length + 1))
+    getRandCard(state, payload) {
+        state.showCard[state.cardIndex].show = true
+        state.refCards = payload.cards
 
-      if(state.activeCards.includes(rand)) {
-        this.$store.commit('getRandCard')
-      } else {
-        state.classes[state.cardIndex].show = true
-        const card = this.$refs[state.cardIndex][0]
+        payload.card.classList.add('card-active')
+        payload.card.style.backgroundPositionX = state.cards[state.rand].positionX + 'px'
+        payload.card.style.backgroundPositionY = state.cards[state.rand].positionY + 'px'
+        payload.card.style.transform = `translate(${state.translateX}px, 300px)`
 
-        card.classList.add('card-active')
-        card.style.backgroundPositionX = state.cards[rand].positionX + 'px'
-        
-        card.style.backgroundPositionY = state.cards[rand].positionY + 'px'
-        card.style.transform = `translate(${state.translateX}px, 300px)`
-        
-        state.activeCards.push(rand)
-        state.currentScope += state.cards[rand].scope
+        state.activeCards.push(state.rand)
+        state.currentScope += state.cards[state.rand].scope
         state.cardIndex++
         state.translateX += 40
-        this.$store.commit('check')
+      },
+      getRandIndex(state) {
+        state.rand = Math.floor(Math.random() * (state.cards.length))
+      },
+      excessPoints(state) {
+        state.showPopup = true
+      },
+      restart(state) {
+        state.showPopup = false
+        state.currentScope =  0
+        state.translateX = -300
+        state.activeCards = [],
+        state.cardIndex = 0
+        
+        state.showCard.forEach(c => {
+          c.show = false
+        })
+
+        state.refCards.forEach(card => {
+          card.classList.remove('card-active')
+          card.style.backgroundPositionX = 0
+          card.style.backgroundPositionY = 0
+          card.style.transform = 'none'
+        })
+
+        state.currentScope = 0
+      }
+  },
+  actions: {
+    getRandCard({commit, state}, card) {
+      if(state.activeCards.includes(state.rand)) {
+        commit('getRandIndex')
+      } else {
+        commit('getRandCard', card)
       }
     },
-    check(state) {
-      if (state.currentScope > 21) {
-        this.$stare.commit('excessPoints')
-      }
+    restart({commit}) {
+      commit('restart')
     },
-    excessPoints(state) {
-      state.show = true
-    } 
+    excessPoints({commit}) {
+      commit('excessPoints')
+    }
   },
   getters: {
-    showPopup(state) {
-      return state.showPopup
-    }
+    cardIndex: state => state.cardIndex,
+    currentScope: state => state.currentScope,
+    rand: state => state.rand,
+    showPopup: state => state.showPopup,
   }
-})
+}

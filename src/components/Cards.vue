@@ -9,7 +9,7 @@
             v-for="(card, index) in 10"
             :key="index"
             class="card"
-            :ref="index"
+            ref="cards"
           ></li>
         </ul>
       </div>
@@ -20,7 +20,19 @@
 export default {
   methods: {
     getRandCard() {
-      this.$store.commit('getRandCard')
+      const cards = this.$refs.cards
+      const card = this.$refs.cards[this.$store.getters.cardIndex]
+      this.$store.dispatch('getRandCard', {
+        card, cards
+      })
+    }
+  },
+  computed: {
+    currentScope() {
+      if (this.$store.getters.currentScope > 21) {
+        this.$store.dispatch('excessPoints')
+      }
+      return this.$store.getters.currentScope
     }
   }
 }
