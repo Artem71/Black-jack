@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="wrapper alert alert-success">
-      <h4 class="alert-heading mb-5">У вас перебор очков!</h4>
+      <h4 class="alert-heading mb-5">{{popupMsg}}</h4>
       <button class="btn btn-success btn-lg btn-block" @click="restart">Еще раз</button>
     </div>
   </div>
@@ -12,6 +12,11 @@ export default {
   methods: {
     restart() {
       this.$store.dispatch('restart')
+    }
+  },
+  computed: {
+    popupMsg() {
+      return this.$store.getters.popupMsg
     }
   }
 }

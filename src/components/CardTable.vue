@@ -1,6 +1,7 @@
 <template>
   <div class="card-table">
     <Cards />
+    
     <Popup v-if="showPopup" />
   </div>
 </template>

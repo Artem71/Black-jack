@@ -1,18 +1,28 @@
 <template>
     <div class="container ">
-      <div class="scope-wrapper">
-        <h1>Очки: {{currentScope}}</h1>
+      <div class="scope-wrapper alert alert-primary shadow w-25 text-center">
+        <h4>Очки ваши: {{currentScope}}</h4>
+        <h4>Очки компьютера: {{scriptScope}}</h4>
       </div>
       <div class="cards-pack" @click="getRandCard">
         <ul>
           <li 
-            v-for="(card, index) in 10"
+            v-for="(card, index) in 36"
             :key="index"
             class="card"
             ref="cards"
           ></li>
         </ul>
+        
       </div>
+      <button 
+        @click="enough" 
+        type="button" 
+        class="btn btn-warning font-weight-bolder mt-3 ml-3 w-25 align-self-start"
+        :disabled="!disabledBtn"
+      >
+      Достаточно
+      </button>
     </div>
 </template>
 
@@ -20,19 +30,54 @@
 export default {
   methods: {
     getRandCard() {
+      if (this.$store.getters.cardSet) {
+        const cards = this.$refs.cards
+        const card = this.$refs.cards[this.$store.getters.cardIndex]
+        this.$store.dispatch('getRandCard', {
+          card, cards
+        })
+      } else {
+        console.log('bot')
+      }
+    },
+    enough() {
       const cards = this.$refs.cards
       const card = this.$refs.cards[this.$store.getters.cardIndex]
-      this.$store.dispatch('getRandCard', {
-        card, cards
+      this.$store.dispatch('enough', {
+        card, 
+        cards
       })
     }
   },
   computed: {
+    card() {
+      return this.$refs.cards
+    },
+    cards() {
+      return this.$refs.cards[this.$store.getters.cardIndex]
+    },
     currentScope() {
       if (this.$store.getters.currentScope > 21) {
         this.$store.dispatch('excessPoints')
       }
       return this.$store.getters.currentScope
+    },
+    scriptScope() {
+      if (this.$store.getters.scriptScope < 21 && this.$store.getters.scriptScope !== 0) {
+        setTimeout(() => {
+          const cards = this.$refs.cards
+          const card = this.$refs.cards[this.$store.getters.cardIndex]
+          this.$store.dispatch('enough', {
+            card, 
+            cards
+          })
+        }, 1000)
+      }
+
+      return this.$store.getters.scriptScope
+    },
+    disabledBtn() {
+      return this.$store.getters.cardSet
     }
   }
 }
@@ -73,6 +118,7 @@ export default {
 
   .card {
     position: absolute;
+    left: 0;
     display: block;
     opacity: 0;
     background-image: url(../assets/Cards.png);
