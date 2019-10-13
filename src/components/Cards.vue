@@ -1,5 +1,5 @@
 <template>
-    <div class="container ">
+    <div class="container d-flex p-5 justify-content-center h-100">
       <div class="scope-wrapper alert alert-primary shadow w-25 text-center">
         <h4>Очки ваши: {{currentScope}}</h4>
         <h4>Очки компьютера: {{scriptScope}}</h4>
@@ -85,13 +85,6 @@ export default {
 </script>
 
 <style scoped>
-  .container {
-    display: flex;
-    justify-content: center;
-    padding: 50px;
-    min-height: 90vh;
-  }
-
   .cards-pack {
     background-image: url(../assets/pack.png);
     background-position: center;
